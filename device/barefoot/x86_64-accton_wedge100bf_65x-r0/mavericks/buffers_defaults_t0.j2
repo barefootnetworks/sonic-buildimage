@@ -6,7 +6,7 @@
 
 {%- macro generate_port_lists(PORT_ALL) %}
     {# Generate list of ports #}
-    {%- for port_idx in range(0,64) %}
+    {%- for port_idx in range(0,32) %}
         {%- if PORT_ALL.append("Ethernet%d" % (port_idx * 4)) %}{%- endif %}
     {%- endfor %}
 {%- endmacro %}
@@ -63,17 +63,12 @@
     },
 {%- endmacro %}
 
-{%- macro generate_profile_lists(port_names) %}
-    "BUFFER_PORT_INGRESS_PROFILE_LIST": {
-        "{{ port_names }}": {
-            "profile_list" : "[BUFFER_PROFILE|ingress_lossless_profile],[BUFFER_PROFILE|ingress_lossy_profile]"
+{%- macro generate_pg_profils(port_names) %}
+    "BUFFER_PG": {
+        "{{ port_names }}|0-1": {
+            "profile" : "[BUFFER_PROFILE|ingress_lossless_pool]"
         }
     },
-    "BUFFER_PORT_EGRESS_PROFILE_LIST": {
-        "{{ port_names }}": {
-            "profile_list" : "[BUFFER_PROFILE|egress_lossless_profile],[BUFFER_PROFILE|egress_lossy_profile]"
-        }
-    }
 {%- endmacro %}
 
 {%- macro generate_queue_buffers(port_names) %}
@@ -86,5 +81,3 @@
         }
     }
 {%- endmacro %}
-
-
