@@ -63,6 +63,14 @@
     },
 {%- endmacro %}
 
+{%- macro generate_pg_profils(port_names) %}
+    "BUFFER_PG": {
+        "{{ port_names }}|0-1": {
+            "profile" : "[BUFFER_PROFILE|ingress_lossless_pool]"
+        }
+    },
+{%- endmacro %}
+
 {%- macro generate_queue_buffers(port_names) %}
     "BUFFER_QUEUE": {
         "{{ port_names }}|3-4": {
@@ -73,5 +81,3 @@
         }
     }
 {%- endmacro %}
-
-
