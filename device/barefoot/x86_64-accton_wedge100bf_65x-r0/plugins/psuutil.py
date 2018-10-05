@@ -28,7 +28,8 @@ class PsuUtil(PsuBase):
         output = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         num,err = output.communicate()
         if err != "":
-            raise RuntimeError("{0:s}".format(err))
+            sys.stderr.write("{0:s}".format(err))
+            raise Exception('Runtime Exception')
         else:
             return int(num.strip())
 
@@ -45,7 +46,8 @@ class PsuUtil(PsuBase):
         output = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out,err = output.communicate()
         if err != "":
-            raise RuntimeError("{0:s}".format(err))
+            sys.stderr.write("{0:s}".format(err))
+            raise Exception('Runtime Exception')
         else:
             if out.strip() == "True":
                 presence = True
@@ -57,7 +59,8 @@ class PsuUtil(PsuBase):
         sout,serr = status.communicate()
 
         if serr != "":
-            raise RuntimeError("{0:s}".format(err))
+            sys.stderr.write("{0:s}".format(serr))
+            raise Exception('Runtime Exception')
         else:
             if sout.strip() == "True":
                  psu_status = True
@@ -78,7 +81,8 @@ class PsuUtil(PsuBase):
         output = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out,err = output.communicate()
         if err != "":
-            raise RuntimeError("{0:s}".format(err))
+            sys.stderr.write("{0:s}".format(err))
+            raise Exception('Runtime Exception')
         else:
             if out.strip() == "True":
                 presence = True

@@ -75,7 +75,8 @@ class board(eeprom_tlvinfo.TlvInfoDecoder, eeprom_base.EepromDecoder):
         output = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         eeprom,err = output.communicate()
         if err != "":
-            raise RuntimeError("{0:s}".format(err))
+            sys.stderr.write("{0:s}".format(err))
+            raise Exception('Runtime Exception')
         else:
             return eeprom
 

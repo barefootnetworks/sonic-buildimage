@@ -23,7 +23,7 @@ class SfpUtil(SfpUtilBase):
 
     @property
     def port_end(self):
-        cmd = "docker exec -it syncd sfputil get_number_qsfp_ports"
+        cmd = "docker exec -i syncd sfputil get_number_qsfp_ports"
         count=subprocess.Popen(cmd, shell=True,stdout=subprocess.PIPE).stdout.read()
         return int(count.strip())-1
 
@@ -40,7 +40,7 @@ class SfpUtil(SfpUtilBase):
         if port_num < self.port_start or port_num > self.port_end:
             return False
         qsfp_port = port_num + 1
-        cmd = "docker exec -it syncd sfputil get_presence {0:s}".format(str(qsfp_port))
+        cmd = "docker exec -i syncd sfputil get_presence {0:s}".format(str(qsfp_port))
         presence=subprocess.Popen(cmd, shell=True,stdout=subprocess.PIPE).stdout.read()
         if presence.strip() == "True":
             return True
@@ -52,7 +52,7 @@ class SfpUtil(SfpUtilBase):
         if port_num < self.port_start or port_num > self.port_end:
             return False
         qsfp_port = port_num + 1
-        cmd = "docker exec -it syncd sfputil get_lp_mode {0:s}".format(str(qsfp_port))
+        cmd = "docker exec -i syncd sfputil get_lp_mode {0:s}".format(str(qsfp_port))
         lpmode=subprocess.Popen(cmd, shell=True,stdout=subprocess.PIPE).stdout.read()
         if lpmode.strip() == "True":
             return True
