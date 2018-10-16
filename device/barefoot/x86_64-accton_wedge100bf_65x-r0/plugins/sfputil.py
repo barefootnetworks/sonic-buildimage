@@ -15,7 +15,8 @@ except ImportError as e:
 class SfpUtil(SfpUtilBase):
     """Platform-specific SfpUtil class"""
 
-    PORT_START = 0
+    PORT_START = 1
+    SONIC_PORT_NAME_PREFIX = "Ethernet"
 
     @property
     def port_start(self):
@@ -25,7 +26,16 @@ class SfpUtil(SfpUtilBase):
     def port_end(self):
         cmd = "docker exec -i syncd sfputil get_number_qsfp_ports"
         count=subprocess.Popen(cmd, shell=True,stdout=subprocess.PIPE).stdout.read()
-        return int(count.strip())-1
+        return int(count.strip())
+
+    def get_logical_to_physical(self, port_name):
+        if not port_name.startswith(self.SONIC_PORT_NAME_PREFIX):
+            return None
+
+        port_idx = int(port_name[len(self.SONIC_PORT_NAME_PREFIX):])
+
+        return [port_idx]
+
 
     """ BFN Wedge based platform do not export eeprom info via sysfs path. Hence we skip this"""
     @property
@@ -39,7 +49,7 @@ class SfpUtil(SfpUtilBase):
         # Check for invalid port_num
         if port_num < self.port_start or port_num > self.port_end:
             return False
-        qsfp_port = port_num + 1
+        qsfp_port = port_num
         cmd = "docker exec -i syncd sfputil get_presence {0:s}".format(str(qsfp_port))
         presence=subprocess.Popen(cmd, shell=True,stdout=subprocess.PIPE).stdout.read()
         if presence.strip() == "True":
@@ -51,7 +61,7 @@ class SfpUtil(SfpUtilBase):
         # Check for invalid port_num
         if port_num < self.port_start or port_num > self.port_end:
             return False
-        qsfp_port = port_num + 1
+        qsfp_port = port_num
         cmd = "docker exec -i syncd sfputil get_lp_mode {0:s}".format(str(qsfp_port))
         lpmode=subprocess.Popen(cmd, shell=True,stdout=subprocess.PIPE).stdout.read()
         if lpmode.strip() == "True":
@@ -67,7 +77,7 @@ class SfpUtil(SfpUtilBase):
         # Check for invalid port_num
         if port_num < self.port_start or port_num > self.port_end:
             return False
-        qsfp_port = port_num + 1
+        qsfp_port = port_num
         cmd = "docker exec -i syncd sfputil sfp_reset {0:s}".format(str(qsfp_port))
         output = subprocess.Popen(cmd, shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = output.communicate()
@@ -87,7 +97,7 @@ class SfpUtil(SfpUtilBase):
             mode = 1
         else:
             mode = 0
-        qsfp_port = port_num + 1
+        qsfp_port = port_num
         cmd = "docker exec -i syncd sfputil set_low_power_mode {0:s} {1:d}".format(str(qsfp_port),mode)
         output = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out,err = output.communicate()
@@ -103,7 +113,7 @@ class SfpUtil(SfpUtilBase):
         # Check for invalid port_num
         if port_num < self.port_start or port_num > self.port_end:
             return False
-        qsfp_port = port_num + 1
+        qsfp_port = port_num
         cmd = "docker exec -i syncd sfputil get_eeprom_raw {0:s}".format(str(qsfp_port))
         process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         sfp_raw, err = process.communicate()
@@ -118,7 +128,7 @@ class SfpUtil(SfpUtilBase):
         # Check for invalid port_num
         if port_num < self.port_start or port_num > self.port_end:
             return False
-        qsfp_port = port_num + 1
+        qsfp_port = port_num
         cmd = "docker exec -i syncd sfputil get_eeprom_raw {0:s}".format(str(qsfp_port))
         process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         sfp_raw, err = process.communicate()
