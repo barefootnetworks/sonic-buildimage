@@ -5,6 +5,8 @@ Requires=database.service updategraph.service
 Requires=opennsl-modules-4.9.0-7-amd64.service
 {% elif sonic_asic_platform == 'nephos' %}
 Requires=nps-modules-4.9.0-7-amd64.service
+{% elif sonic_asic_platform == 'barefoot' %}
+Requires=p4stack.service
 {% endif %}
 After=database.service updategraph.service
 After=interfaces-config.service
@@ -12,6 +14,8 @@ After=interfaces-config.service
 After=opennsl-modules-4.9.0-7-amd64.service
 {% elif sonic_asic_platform == 'nephos' %}
 After=nps-modules-4.9.0-7-amd64.service
+{% elif sonic_asic_platform == 'barefoot' %}
+After=p4stack.service
 {% endif %}
 
 [Service]

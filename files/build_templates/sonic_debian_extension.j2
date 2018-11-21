@@ -283,6 +283,10 @@ sudo LANG=C chroot $FILESYSTEM_ROOT fuser -km /sys || true
 sudo LANG=C chroot $FILESYSTEM_ROOT umount -lf /sys
 {% endif %}
 
+{% if sonic_asic_platform == "barefoot" %}
+sudo cp p4stack.service $FILESYSTEM_ROOT/etc/systemd/system/
+sudo LANG=C chroot $FILESYSTEM_ROOT systemctl enable p4stack.service
+{% endif %}
 # Copy swss and syncd service script
 sudo LANG=C cp $SCRIPTS_DIR/swss.sh $FILESYSTEM_ROOT/usr/local/bin/swss.sh
 sudo LANG=C cp $SCRIPTS_DIR/syncd.sh $FILESYSTEM_ROOT/usr/local/bin/syncd.sh
