@@ -2,17 +2,21 @@
 
 Description=Barefoot P4 stack cofiguration service
 Before=syncd.service
-
+After=database.service
 [Service]
 
 Type=oneshot
+{% if CONFIGURED_P4_STACK is not defined %}
+{% set CONFIGURED_P4_STACK= 'p4_14' %}
+{% endif %}
 Environment=P4_STACK={{ CONFIGURED_P4_STACK  }}
 
 ExecStart=/bin/bash -c ' \
     PLATFORM=$(/usr/local/bin/sonic-cfggen -H -v 'DEVICE_METADATA.localhost.platform'); \
     HWSKU=$(/usr/local/bin/sonic-cfggen -d -v 'DEVICE_METADATA.localhost.hwsku'); \
     cd /usr/share/sonic/device/$PLATFORM/$HWSKU; \
-    [[ "$P4_STACK" == "p4_16" ]] && ln -s switch-sai.p416.conf switch-sai.conf || ln -s switch-sai.p414.conf switch-sai.conf'
+    [[ "$P4_STACK" == "p4_16" ]] && ln -s switch-sai.p416.conf switch-sai.conf \
+    || ln -s switch-sai.p414.conf switch-sai.conf'
 
 [Install
-WantedBy=multi-user.targ]et
+WantedBy=multi-user.target

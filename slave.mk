@@ -519,9 +519,9 @@ $(addprefix $(TARGET_PATH)/, $(SONIC_INSTALLERS)) : $(TARGET_PATH)/% : \
 	j2 -f env files/initramfs-tools/arista-convertfs.j2 onie-image.conf > files/initramfs-tools/arista-convertfs
 
 	j2 files/build_templates/updategraph.service.j2 > updategraph.service
-	ifeq ($(CONFIGURED_PLATFORM),barefoot)
+ifeq ($(CONFIGURED_PLATFORM),barefoot)
 	j2 $(PLATFORM_PATH)/systemd/p4stack.service.j2 > p4stack.service
-	endif
+endif
 	$(if $($*_DOCKERS),
 		j2 files/build_templates/sonic_debian_extension.j2 > sonic_debian_extension.sh
 		chmod +x sonic_debian_extension.sh,
